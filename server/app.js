@@ -10,6 +10,8 @@ var AuthMiddleware = require('./middlewares/Auth')
 var userRouter = require('./routes/user')
 var bodyParser = require('body-parser')
 var marketRouter = require('./routes/market')
+const lostfoundRouter = require('./routes/lostfound')
+
 
 var app = express();
 app.use(bodyParser.json())
@@ -29,7 +31,7 @@ app.use(registerRouter);
 app.use(AuthMiddleware)
 app.use(userRouter)
 app.use(marketRouter)
-
+app.use(lostfoundRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
