@@ -19,10 +19,17 @@ const lostfoundCtrl = {
     },
     getfound:async (req,res)=>{
         const [result] = await lostfoundModel.getfound()
-        result.forEach(item=>item.time=`用户 ${item.username} 发布于 ${moment(item.time).format('lll')}`,)
+        result.forEach(item=>item.usertime=`用户 ${item.username} 发布于 ${moment(item.time).format('lll')}`,)
         res.send({
             ok:1,
-            founditems:result.reverse()
+            founditems:result.sort((a,b)=>b.time-a.time)
+        })
+    },
+    deleteitem:async (req,res)=>{
+        await lostfoundModel.deleteitem(req.query)
+        res.send({
+            ok:1,
+            message:'删除成功'
         })
     }
 }

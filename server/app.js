@@ -11,7 +11,8 @@ var userRouter = require('./routes/user')
 var bodyParser = require('body-parser')
 var marketRouter = require('./routes/market')
 const lostfoundRouter = require('./routes/lostfound')
-
+var topicRouter = require('./routes/topic')
+var uploadImgRouter = require('./routes/uploadImg')
 
 var app = express();
 app.use(bodyParser.json())
@@ -27,11 +28,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 app.use(loginRouter)
-app.use(registerRouter);
+app.use(registerRouter)
+app.use(uploadImgRouter)
 app.use(AuthMiddleware)
 app.use(userRouter)
 app.use(marketRouter)
 app.use(lostfoundRouter)
+app.use(topicRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

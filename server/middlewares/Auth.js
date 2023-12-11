@@ -6,7 +6,7 @@ const Auth = (req, res, next) => {
         const detoken = JWT.verify(token.split(' ')[1])
         if (detoken) {
             const { id, username, password, occupation, sex, avatarfile } = detoken
-            const newtoken = JWT.sign({ id, username, password, occupation, sex, avatarfile }, '1h')
+            const newtoken = JWT.sign({ id, username, password, occupation, sex, avatarfile }, '5h')
             res.header('authorization', newtoken)
             next()
         } else {
