@@ -32,6 +32,10 @@ const topicModel = {
     addHot:(query)=>{
         const {topicId} = query
         return db.query(`update topics set hot = hot+1 where topicId=${topicId}`)
+    },
+    getTopicDetail:async (query)=>{
+        const [detail] = await db.query(`select t.*,u.avatarfile,u.username,u.id,u.sex from topics t join users u on t.userId=u.id where t.topicId=${query.topicId}`)
+        return detail[0]
     }
 }
 

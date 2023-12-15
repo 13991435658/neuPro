@@ -8,5 +8,6 @@ router.post('/api/topic/publishtopic',upload.single('cover'),topicCtrl.publishTo
 router.get('/api/topic/alltopic/:userId',topicCtrl.getallTopic)
 router.post('/api/topic/updatesupport',topicCtrl.updateSupport)
 router.get('/api/topic/addHot',topicCtrl.addHot)
+router.get('/api/topic/gettopicdetail',topicCtrl.getTopicDetail)
 
 module.exports = router

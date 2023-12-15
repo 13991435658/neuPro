@@ -33,6 +33,13 @@ const topicCtrl = {
             ok:1,
             message:'热度加1'
         })
+    },
+    getTopicDetail:async (req,res)=>{
+        const detail = await topicModel.getTopicDetail(req.query)
+        res.send({
+            ok:1,
+            detail
+        })
     }
 }
 
