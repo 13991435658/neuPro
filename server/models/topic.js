@@ -8,11 +8,15 @@ const topicModel = {
     getallTopic:async (params)=>{
         const [allTopic] = await db.query('select t.*,u.avatarfile,u.username,u.id,u.sex from topics t join users u on t.userId=u.id')
         const [supportedItem] = await db.query('select * from supports where userId=?',[params.userId])
+        const [commentInfo] = await db.query('select c.topicId from comments c')
+        const commentArr = commentInfo.map(item=>item.topicId)
+        const commentMap = {}
+        commentArr.forEach((num)=>commentMap[num]=(commentMap[num] || 0)+1)
         const supportInfo = {}
         const hotNum = {}
         allTopic.forEach(item=>supportInfo[item.topicId]=[item.support,supportedItem.find(fitem=>fitem.topicId===item.topicId)?true:false])
         allTopic.forEach(item=>hotNum[item.topicId]=item.hot)
-        return {supportInfo,allTopic,hotNum}
+        return {supportInfo,allTopic,hotNum,commentMap}
     },
     updateSupport:(body)=>{
         const {userId,diffres} = body
@@ -36,6 +40,26 @@ const topicModel = {
     getTopicDetail:async (query)=>{
         const [detail] = await db.query(`select t.*,u.avatarfile,u.username,u.id,u.sex from topics t join users u on t.userId=u.id where t.topicId=${query.topicId}`)
         return detail[0]
+    },
+    publishComment:(body)=>{
+        const {topicId,userId,commenthtml,time} =  body
+        return db.query('insert into comments (topicId,userId,commenthtml,time) values (?,?,?,?)',[topicId,userId,commenthtml,time])
+    },
+    getTopicComment:({topicId})=>{
+        return db.query('select c.*,u.id,u.avatarfile,u.username from comments c join users u on c.userId = u.id where c.topicId=?',[topicId])
+    },
+    publishReply:(body)=>{
+        const {topicId,commentId,receiveId,sendId,time,replyhtml} = body
+        return db.query('insert into replys (topicId,commentId,receiveId,sendId,time,replyhtml) values (?,?,?,?,?,?)',[topicId,commentId,receiveId,sendId,time,replyhtml])
+    },
+    getCommentReply:async ({topicId})=>{
+        const [replyArr] = await db.query('select r.*,u.id,u.avatarfile,u.username from replys r join users u on r.sendId = u.id where r.topicId=?',[topicId])
+        for(let item of replyArr){
+            const [receiver] = await db.query('select * from users where id=?',[item.receiveId])
+            item.receiveName = receiver[0].username
+            item.receiveAvatar = receiver[0].avatarfile
+        }
+        return replyArr
     }
 }
 

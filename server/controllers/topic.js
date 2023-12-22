@@ -11,13 +11,14 @@ const topicCtrl = {
         })
     },
     getallTopic:async (req,res)=>{
-        const {supportInfo,allTopic,hotNum} = await topicModel.getallTopic(req.params)
+        const {supportInfo,allTopic,hotNum,commentMap} = await topicModel.getallTopic(req.params)
         allTopic.forEach(item=>item.usertime=`用户 ${item.username} 发布于 ${moment(item.time).format('lll')}`)
         res.send({
             ok:1,
             allTopic,
             supportInfo,
-            hotNum
+            hotNum,
+            commentMap
         })
     },
     updateSupport:async (req,res)=>{
@@ -39,6 +40,34 @@ const topicCtrl = {
         res.send({
             ok:1,
             detail
+        })
+    },
+    publishComment:async (req,res)=>{
+        await topicModel.publishComment(req.body)
+        res.send({
+            ok:1,
+            message:'评论成功'
+        })
+    },
+    getTopicComment:async (req,res)=>{
+        const [result] = await topicModel.getTopicComment(req.query)
+        res.send({
+            ok:1,
+            commentInfo:result
+        })
+    },
+    publishReply:async (req,res)=>{
+        await topicModel.publishReply(req.body)
+        res.send({
+            ok:1,
+            message:'回复成功'
+        })
+    },
+    getCommentReply: async (req,res)=>{
+        const result = await topicModel.getCommentReply(req.query)
+        res.send({
+            ok:1,
+            replyInfo:result
         })
     }
 }
